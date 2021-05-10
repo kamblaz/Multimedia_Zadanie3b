@@ -3,8 +3,9 @@
 <meta charset="utf-8">
 <title>Worker example: image decoding</title>
 
-<p>
-    <label>
+<body>
+    <p>
+        <label>
     Type an image URL to decode
     <input type="url" id="image-url" list="image-list">
     <datalist id="image-list">
@@ -13,56 +14,86 @@
       <option value="https://html.spec.whatwg.org/images/arcTo2.png">
     </datalist>
   </label>
-</p>
+    </p>
 
-<p>
-    <label>
+    <p>
+        <label>
     Choose a filter to apply
     <select id="filter">
       <option value="none">none</option>
       <option value="grayscale">grayscale</option>
     </select>
   </label>
-</p>
+    </p>
+    <div id="output"></div>
 
-<div id="output"></div>
-
-<script>
-    const worker = new Worker("worker.js", {
-        type: "module"
-    });
-    worker.onmessage = receiveFromWorker;
-    const url = document.querySelector("#image-url");
-    const filter = document.querySelector("#filter");
-    const output = document.querySelector("#output");
-    url.oninput = updateImage;
-    filter.oninput = sendToWorker;
-    let imageData, context;
-
-    function updateImage() {
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = url.value;
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            context = canvas.getContext("2d");
-            context.drawImage(img, 0, 0);
-            imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            sendToWorker();
-            output.replaceChildren(canvas);
-        };
-    }
-
-    function sendToWorker() {
-        worker.postMessage({
-            imageData,
-            filter: filter.value
+    <progress id="progress_0" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_1" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_2" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_3" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_4" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_5" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_6" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_7" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_8" value="0" max="100"></progress>
+    <br>
+    <br>
+    <progress id="progress_9" value="0" max="100"></progress>
+    <script>
+        const worker = new Worker("worker.js", {
+            type: "module"
         });
-    }
+        worker.onmessage = receiveFromWorker;
+        const url = document.querySelector("#image-url");
+        const filter = document.querySelector("#filter");
+        const output = document.querySelector("#output");
+        url.oninput = updateImage;
+        filter.oninput = sendToWorker;
+        let imageData, context;
 
-    function receiveFromWorker(e) {
-        context.putImageData(e.data, 0, 0);
-    }
-</script>
+        function updateImage() {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.src = url.value;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context = canvas.getContext("2d");
+                context.drawImage(img, 0, 0);
+                imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                sendToWorker();
+                output.replaceChildren(canvas);
+            };
+        }
+
+        function sendToWorker() {
+            worker.postMessage({
+                imageData,
+                filter: filter.value
+            });
+        }
+
+        function receiveFromWorker(e) {
+            context.putImageData(e.data, 0, 0);
+        }
+    </script>
+</body>
+
+</html>
