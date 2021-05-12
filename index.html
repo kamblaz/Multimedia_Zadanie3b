@@ -15,18 +15,10 @@
     </datalist>
   </label>
     </p>
-
-    <p>
-        <label>
-    Choose a filter to apply
-    <select id="filter">
-      <option value="none">none</option>
-      <option value="grayscale">grayscale</option>
-    </select>
-  </label>
-    </p>
-    <div id="output"></div>
-
+    <canvas id="canvas_input"></canvas>
+    <br>
+    <canvas id="canvas_output"></canvas>
+    <br>
     <progress id="progress_0" value="0" max="100"></progress>
     <br>
     <br>
@@ -59,39 +51,92 @@
         const worker = new Worker("worker.js", {
             type: "module"
         });
+
         worker.onmessage = receiveFromWorker;
+        const worker2 = worker;
+        const worker3 = worker;
+        const worker4 = worker;
+        const worker5 = worker;
+        const worker6 = worker;
+        const worker7 = worker;
+        const worker8 = worker;
+        const worker9 = worker;
         const url = document.querySelector("#image-url");
-        const filter = document.querySelector("#filter");
-        const output = document.querySelector("#output");
+        //const filter = document.querySelector("#filter");
         url.oninput = updateImage;
-        filter.oninput = sendToWorker;
-        let imageData, context;
+        //filter.oninput = sendToWorker;
+        let imageData, context_input, context_output;
 
         function updateImage() {
             const img = new Image();
             img.crossOrigin = "Anonymous";
             img.src = url.value;
             img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = img.width;
-                canvas.height = img.height;
-                context = canvas.getContext("2d");
-                context.drawImage(img, 0, 0);
-                imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const canvas_input = document.getElementById("canvas_input");
+                canvas_input.width = img.width;
+                canvas_input.height = img.height;
+                context_input = canvas_input.getContext("2d");
+                context_input.drawImage(img, 0, 0);
+                imageData = context_input.getImageData(0, 0, canvas_input.width, canvas_input.height);
                 sendToWorker();
-                output.replaceChildren(canvas);
             };
         }
 
         function sendToWorker() {
             worker.postMessage({
                 imageData,
-                filter: filter.value
+                //filter: filter.value
+            });
+            worker2.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker3.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker4.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker5.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker6.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker7.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker8.postMessage({
+                imageData,
+                //filter: filter.value
+            });
+            worker9.postMessage({
+                imageData,
+                //filter: filter.value
             });
         }
 
         function receiveFromWorker(e) {
-            context.putImageData(e.data, 0, 0);
+            // console.log(e.data);
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.src = url.value;
+            canvas_output = document.getElementById('canvas_output');
+            canvas_output.width = img.width;
+            canvas_output.height = img.height;
+            context_output = canvas_output.getContext("2d");
+            context_output.drawImage(img, 0, 0);
+            // document.getElementById("progress_0").value = 100;
+            for (let i = 0; i < 10; i++) {
+                postprocessingProgress = document.getElementById("progress_" + i);
+                postprocessingProgress.value = parseInt(postprocessingProgress.value) + 100;
+            }
+            context_output.putImageData(e.data, 0, 0);
         }
     </script>
 </body>
